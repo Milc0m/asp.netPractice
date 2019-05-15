@@ -12,8 +12,17 @@ namespace SimpleServer
 
         static void Main()
         {
+            ConfigFileCreate config = new ConfigFileCreate();
+            config.Create();
+
+            WorkWithConfigFIle workWithConfig = new WorkWithConfigFIle();
+            workWithConfig.Read(config.defoultPath);
+            string address = "http://127.0.0.1:" + (workWithConfig.Port) + "/";
+            Console.WriteLine(workWithConfig.Port);
+            Console.WriteLine(workWithConfig.Path);
+
             // Adding server to port 30000
-            MyServer.Prefixes.Add("http://127.0.0.1:30000/");
+            MyServer.Prefixes.Add(address);
             // Starting server
             MyServer.Start();
 
