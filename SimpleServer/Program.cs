@@ -12,16 +12,13 @@ namespace SimpleServer
 
         static void Main()
         {
-            ConfigFileCreate config = new ConfigFileCreate();
+            Config config = new Config();
             config.Create();
-
-            WorkWithConfigFIle workWithConfig = new WorkWithConfigFIle();
-            workWithConfig.Read(config.defoultPath);
-            string address = "http://127.0.0.1:" + (workWithConfig.Port) + "/";
-            Console.WriteLine(workWithConfig.Port);
-            Console.WriteLine(workWithConfig.Path);
-
-            // Adding server to port 30000
+            config.Read(config.defoultPath);
+            //Getting port number and creating uri for HpLisener object 
+            string address = "http://127.0.0.1:" + (config.Port) + "/";
+            
+            // Adding server to port
             MyServer.Prefixes.Add(address);
             // Starting server
             MyServer.Start();
