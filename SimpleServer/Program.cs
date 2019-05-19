@@ -14,15 +14,23 @@ namespace SimpleServer
         {
             Config config = new Config();
             config.Create();
-            config.Read(config.defoultPath);
-            //Getting port number and creating uri for HpLisener object 
+            config.Read(config.defaultName);
+            //Getting port number and creating uri for HttpListener object 
             string address = "http://127.0.0.1:" + (config.Port) + "/";
             
             // Adding server to port
             MyServer.Prefixes.Add(address);
             // Starting server
-            MyServer.Start();
-
+            try
+            {
+                MyServer.Start();
+            }
+            catch (HttpListenerException)
+            {
+                Console.WriteLine("Please enter valid port number.");
+                config.Exit();
+            }
+           
             Console.WriteLine("Listen.....");
 
             while (MyServer.IsListening)
