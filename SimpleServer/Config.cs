@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Xml;
 using System.Xml.Linq;
-using System.Linq;
 using System.Security;
 
 namespace SimpleServer
@@ -17,10 +14,11 @@ namespace SimpleServer
         // adding default path for config file
         public string defaultName = "serverconfig.xml";
         
-        // Creating defoultt XML file
+        // Creating default XML file
         public void Create()
         {
             XDocument xdoc = new XDocument();
+            //default server port 60000
             XElement portNumberElem = new XElement("port", "60000");
             XElement pathtoWedDirElem = new XElement("path", "\\Web Files\\");
             // creating XML root element
@@ -33,9 +31,9 @@ namespace SimpleServer
             {
                 xdoc.Save("serverconfig.xml");
             }
-            catch (UnauthorizedAccessException)
+            catch (SecurityException)
             {
-                Console.WriteLine("Don't have permission to create default config file.");
+                PrintErrorAndExit("Don't have permission to create default config file.");
             }
         }
 
@@ -53,18 +51,15 @@ namespace SimpleServer
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("Enter valid information about port.");
-                    Exit();
+                    PrintErrorAndExit("Missing port number in config file.");
                 }
                 catch (NullReferenceException)
                 {
-                    Console.WriteLine("Please enter port number.");
-                    Exit();
+                    PrintErrorAndExit("Missing port number in config file.");
                 }
                 if (Port < 0 && Port > 65536)
                 {
-                    Console.WriteLine("Port number must be between 0-65536");
-                    Exit();
+                    PrintErrorAndExit("Port number must be between 0-65536");
                 }
 
                 try
@@ -73,30 +68,22 @@ namespace SimpleServer
                 }
                 catch(NullReferenceException)
                 {
-                    Console.WriteLine("Please enter path to webfiles dir.");
-                    Exit();
+                    PrintErrorAndExit("Please enter path to webfiles dir.");
                 }
-            }
-            catch (XmlException)
-            {
-                Console.WriteLine("Config file is empty or it can't be read!");
-                Exit();
             }
             catch (SecurityException)
             {
-                Console.WriteLine("Can't access to the location of the XML data! Need more permissions!");
-                Exit();
+                PrintErrorAndExit("Error! Can't access to the location of the XML data! Need more permissions!");
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine("Can't find file in inputted location!");
-                Exit();
+                PrintErrorAndExit("Can't find file in inputted location!");
             }
         }
 
-        public void Exit()
+        public void PrintErrorAndExit(string message)
         {
-            Console.WriteLine("Program will be close.");
+            Console.WriteLine("Error! " + message + " Program will be close.");
             // Delay
             Console.ReadKey();
             Environment.Exit(-1);

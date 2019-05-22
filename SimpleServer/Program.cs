@@ -13,8 +13,14 @@ namespace SimpleServer
         static void Main()
         {
             Config config = new Config();
-            config.Create();
+
+            if (!File.Exists(config.defaultName))
+            {
+                config.Create();
+            }
+            
             config.Read(config.defaultName);
+
             //Getting port number and creating uri for HttpListener object 
             string address = "http://127.0.0.1:" + (config.Port) + "/";
             
@@ -27,8 +33,7 @@ namespace SimpleServer
             }
             catch (HttpListenerException)
             {
-                Console.WriteLine("Please enter valid port number.");
-                config.Exit();
+                config.PrintErrorAndExit("Please enter valid port number.");
             }
            
             Console.WriteLine("Listen.....");
