@@ -10,16 +10,33 @@ namespace SimpleServer
         // Creating server
         private static readonly HttpListener MyServer = new HttpListener();
 
-        static void Main()
+        static void Main(string[] args)
         {
             Config config = new Config();
+            // Creating array for console arguments
+            String[] arguments;
 
-            if (!File.Exists(config.defaultName))
+            if (args.Length > 1)
             {
-                config.Create();
+                arguments = Environment.GetCommandLineArgs();
+                if (Equals(arguments[1], "-c"))
+                {
+                    config.Read(arguments[2]);
+                }
+                else
+                {
+                     config.PrintErrorAndExit("Unknown console key.");
+                }
             }
-            
-            config.Read(config.defaultName);
+            else
+            {
+                if (!File.Exists(config.defaultName))
+                {
+                    config.Create();
+                }
+                Console.WriteLine("You not entered console arguments. Program will use default config file.");
+                config.Read(config.defaultName);
+            }
 
             //Getting port number and creating uri for HttpListener object 
             string address = "http://127.0.0.1:" + (config.Port) + "/";
